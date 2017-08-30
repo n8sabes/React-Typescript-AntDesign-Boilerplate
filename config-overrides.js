@@ -1,6 +1,7 @@
 const { injectBabelPlugin } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
 var paths = require('react-scripts-ts/config/paths');
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 
 module.exports = function override(config, env) {
 	const tsLoader = config.module.rules.find(conf => {
@@ -34,11 +35,22 @@ module.exports = function override(config, env) {
 		include: paths.appSrc,
 		loader: require.resolve('babel-loader'),
 		options: {
-			babelrc: false,
+			babelrc: true,
 			presets: [require.resolve('babel-preset-react-app')],
 			cacheDirectory: true,
 		},
 	});
+
+	// Optimize
+	config.plugins.push(new ParallelUglifyPlugin({
+		sourceMap: true,
+		uglifyES: {
+			// These pass straight through to uglify-es.
+			// Cannot be used with uglifyJS.
+			// uglify-es is a version of uglify that understands newer es6 syntax. You should use this option if the
+			// files that you're minifying do not need to run in older browsers/versions of node.
+		}
+	}));
 
 	return config
 }

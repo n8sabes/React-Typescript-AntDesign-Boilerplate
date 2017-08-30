@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "react-app-rewire-less": "^2.0.6",
-    "react-app-rewired": "^1.2.2"
+    "react-app-rewired": "^1.2.2",
+    "webpack-parallel-uglify-plugin": "^1.0.0"
   }
 }
