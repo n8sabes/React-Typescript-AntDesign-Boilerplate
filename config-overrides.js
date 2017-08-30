@@ -1,5 +1,6 @@
 const { injectBabelPlugin } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
+var paths = require('react-scripts-ts/config/paths');
 
 module.exports = function override(config, env) {
 	const tsLoader = config.module.rules.find(conf => {
@@ -25,6 +26,18 @@ module.exports = function override(config, env) {
 	config = rewireLess(config, env, {
 		//We use modifyVars option of less- loader here, you can see a green button rendered on the page after reboot start server.
 		modifyVars: { "@primary-color": "#1DA57A" },
+	});
+
+	// Include rule for JS/JSX files
+	config.module.rules.push({
+		test: /\.(js|jsx)$/,
+		include: paths.appSrc,
+		loader: require.resolve('babel-loader'),
+		options: {
+			babelrc: false,
+			presets: [require.resolve('babel-preset-react-app')],
+			cacheDirectory: true,
+		},
 	});
 
 	return config
